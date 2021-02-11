@@ -77,7 +77,7 @@ class Dog
         DB[:conn].execute(sql, self.name, self.breed, self.id)
         # result = 
         # result << [id, name, breed]
-        #  binding.pry   
+         binding.pry   
     end
 
     def save
