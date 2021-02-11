@@ -54,6 +54,7 @@ class Dog
 
         DB[:conn].execute(sql, name, breed)
         @id = DB[:conn].execute("SELECT last_insert_rowid()")[0][0]
+        binding.pry
         Dog.create(name: name, breed: breed)
     end
 
