@@ -26,13 +26,35 @@ class Dog
         sql = <<-SQL
             DROP TABLE dogs
         SQL
+
         DB[:conn].execute(sql)
     end
 
     def self.create(hash)
-        hash.each do |k, v|
-            self.send(("#{k}="), v)
-        end
+        self.new(hash).save
+    end
+
+    def self.new_from_db(row)
+        new_dog = self.new(id: row[0], name: row[1], breed: row[2])
+    end
+
+    def self.find_by_id(id)
+        sql = "SELECT * FROM dogs WHERE id = ?"
+        result = DB[:conn].execute(sql, id)[0]
+        Dog.new(id: result[0], name: result[1], breed: result[2])
+    end
+
+    def self.find_or_create_by(name:, breed:)
+        sql = <<-SQL 
+            SELECT *
+            FROM dogs
+            WHERE name = ?
+            AND breed = ?
+        SQL
+
+        DB[:conn].execute(sql, name, breed)
+        @id = DB[:conn].execute("SELECT last_insert_rowid()")[0][0]
+        Dog.create(name: name, breed: breed)
     end
 
     def save
