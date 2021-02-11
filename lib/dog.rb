@@ -52,10 +52,32 @@ class Dog
             AND breed = ?
         SQL
 
-        DB[:conn].execute(sql, name, breed)
-        @id = DB[:conn].execute("SELECT last_insert_rowid()")[0][0]
-        binding.pry
-        Dog.create(name: name, breed: breed)
+        db = DB[:conn].execute(sql, name, breed)[0]
+        if db != nil
+            Dog.new(id: db[0], name: db[1], breed: db[2])
+        else 
+            Dog.create(name: name, breed: breed)
+        end
+    end
+
+    def self.find_by_name(name)
+        sql = "SELECT * FROM dogs WHERE name = ?"
+        result = DB[:conn].execute(sql, name)[0]
+        Dog.new(id: result[0], name: result[1], breed: result[2])
+    end
+
+    def update
+        sql = <<-SQL
+            UPDATE dogs 
+            SET name = ?
+            AND breed = ?
+            WHERE id = ?
+        SQL
+
+        DB[:conn].execute(sql, self.name, self.breed, self.id)
+        # result = 
+        # result << [id, name, breed]
+        #  binding.pry   
     end
 
     def save
