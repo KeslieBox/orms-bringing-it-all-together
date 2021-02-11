@@ -66,18 +66,15 @@ class Dog
         Dog.new(id: result[0], name: result[1], breed: result[2])
     end
 
-    def update
+    def update 
         sql = <<-SQL
             UPDATE dogs 
-            SET name = ?
+            SET name = ?, 
             AND breed = ?
             WHERE id = ?
         SQL
 
         DB[:conn].execute(sql, self.name, self.breed, self.id)
-        # result = 
-        # result << [id, name, breed]
-         binding.pry   
     end
 
     def save
